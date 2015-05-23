@@ -300,7 +300,7 @@ func pocketSelect() {
 		options := make([]string, 0)
 
 		for i := 0; i < lang.NumPockets(); i++ {
-			item := strings.Join([]string{"Pocket ", strconv.Itoa(i), " (",
+			item := strings.Join([]string{"Pocket ", strconv.Itoa(i + 1), " (",
 				strconv.Itoa(lang.PocketSize(i)), " vocables)"}, "")
 			options = append(options, item)
 		}
