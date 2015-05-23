@@ -21,8 +21,10 @@ Characters which are not present on your keyboard(or pretty inconvenient) can be
 old-key-sequence := new-key-sequence
 
 E.g.:
-°A := Å
-to write Å in the application you can now use the combination of °a.
+```°A := Å```
+to write Å in the application you can now use the combination of °A.
+
+When editing, check that non of old-key-sequences is part of a new-key-sequence, things like ```b := abc``` will turn out, that every time you type a key, the b in abc will be replaced with abc.
 
 ### Planned features ###
 
