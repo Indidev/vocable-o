@@ -28,8 +28,8 @@ When editing, check that non of old-key-sequences is part of a new-key-sequence,
 
 ### Planned features ###
 
-* ignoring of punctuation characters
-* In-program modification of character replacements
+* ignoring of punctuation characters (DONE)
+* in-program modification of character replacements
 * improve pocket system (modifiable x)
 * add helping support (number of characters, character suggestion,...)
 * add reverse language learning (new language -> known language)

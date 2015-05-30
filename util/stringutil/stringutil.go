@@ -349,3 +349,20 @@ func FindInSlice(wordlist *[]string, needle string) int {
 	}
 	return -1
 }
+
+/*
+	check wheter two strings are equal or not, include option to ignore puctuation
+*/
+func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
+	if ignorePunctuation {
+		var replacements = make(map[string]string)
+		replacements[","] = ""
+		replacements["."] = ""
+		replacements["?"] = ""
+		replacements["!"] = ""
+		replacements[":"] = ""
+		x1 = ReplaceMap(x1, replacements)
+		x2 = ReplaceMap(x2, replacements)
+	}
+	return strings.ToLower(x1) == strings.ToLower(x2)
+}

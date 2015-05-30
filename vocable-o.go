@@ -328,18 +328,23 @@ func learn(pocketIndex int) {
 
 	for repeate := true; repeate; {
 
+		//check number of words in pocket
 		if lang.PocketSize(pocketIndex) > 0 {
 			console.Clear()
+			//get random word
 			randWord, index := lang.RandomWord(pocketIndex)
 
 			text := []string{stringutil.Join(lang1, ":"), randWord.Name,
 				"                            ", stringutil.Join(lang2, ":"), ""}
 
+			//display text and get user input
 			input, valid := console.DisplayCenteredWithInput(text, replacements, "")
 
+			//check if input is valid
 			if valid {
 				mark := ""
-				if strings.ToLower(input) == strings.ToLower(randWord.Translation) {
+				//check if input is equal
+				if stringutil.CheckEqual(input, randWord.Translation, true) {
 					lang.Right(randWord, index)
 					mark = r
 				} else {
