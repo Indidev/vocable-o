@@ -1,4 +1,3 @@
-
 /*
 	This package includes some usefull methods for displaying data on the terminal.
 	This package depends on termbox which is a crossplatform library written by Georg Reinke.
@@ -121,7 +120,7 @@ func writeNoFlush(x, y int, value string) {
 */
 func Menu(items []string, info string) int {
 
-	selection, _ :=ExtendedMenu(items, info, []rune{}, 0)
+	selection, _ := ExtendedMenu(items, info, []rune{}, 0)
 
 	return selection
 }
@@ -132,7 +131,7 @@ func Menu(items []string, info string) int {
 	returns index of the selected item and rune(0) if enter has been pressed.
 	If an accepted character has been pressed, the menu returns the index as well as the pressed character.
 */
-func ExtendedMenu(items []string, info string, acceptedChars []rune, selectedID int) (int, rune){
+func ExtendedMenu(items []string, info string, acceptedChars []rune, selectedID int) (int, rune) {
 	selection := selectedID
 
 	key := rune(0)
@@ -161,7 +160,7 @@ loop:
 
 			default:
 				if ev.Ch != rune(0) {
-					for _,x := range acceptedChars {
+					for _, x := range acceptedChars {
 						if x == ev.Ch {
 							key = ev.Ch
 							break loop
@@ -209,11 +208,11 @@ func drawMenu(items []string, selectedId int, info string) {
 	writeNoFlush((width-stringutil.Size(info))/2, y-2, info)
 
 	//draw box
-		termbox.SetCell(x, y, '┌', termbox.ColorDefault, termbox.ColorDefault)
-		termbox.SetCell(x, y+h+3, '└', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(x, y, '┌', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(x, y+h+3, '└', termbox.ColorDefault, termbox.ColorDefault)
 
-		termbox.SetCell(x + w + 3, y, '┐', termbox.ColorDefault, termbox.ColorDefault)
-		termbox.SetCell(x + w + 3, y+h+3, '┘', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(x+w+3, y, '┐', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(x+w+3, y+h+3, '┘', termbox.ColorDefault, termbox.ColorDefault)
 
 	for i := 1; i < w+3; i++ {
 		termbox.SetCell(x+i, y, '─', termbox.ColorDefault, termbox.ColorDefault)

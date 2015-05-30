@@ -3,35 +3,37 @@ package lang
 import (
 	"github.com/indidev/vocable-o/util/stringutil"
 	"io/ioutil"
-	"strings"
-	"strconv"
-	"os"
 	"math/rand"
+	"os"
+	"strconv"
+	"strings"
 )
 
 type word struct {
-	Name string
-	Translation string
+	Name           string
+	Translation    string
 	successCounter int
-	pocketIndex int
+	pocketIndex    int
 }
 
 var AvailableLanguages []string
 
-var successPerPocket = [5]int {2, 3, 4, 5, 100000}
+var successPerPocket = [5]int{2, 3, 4, 5, 100000}
+
 const wordfile = "wordlist.txt"
 const dirname = "languages/"
+
 var curLang string
 var words [5][]word
 var modified bool = false
 
 type oobError int
 
-func (x oobError) Error() string{
+func (x oobError) Error() string {
 	return strings.Join([]string{"Index", strconv.Itoa(int(x)), "is out of Arraybounds."}, " ")
 }
 
-func CurLang() string{
+func CurLang() string {
 	return curLang
 }
 
@@ -53,7 +55,7 @@ func LoadLanguageByName(langName string) error {
 	return LoadLanguage(stringutil.FindInSlice(&AvailableLanguages, langName))
 }
 
-func LoadLanguage(index int) error{
+func LoadLanguage(index int) error {
 
 	SaveCurLanguage()
 
@@ -83,7 +85,7 @@ func LoadLanguage(index int) error{
 				successCounter, err := strconv.Atoi(strings.TrimSpace(elements[2]))
 				index, err2 := strconv.Atoi(strings.TrimSpace(elements[3]))
 
-				if (err == nil && err2 == nil) {
+				if err == nil && err2 == nil {
 					words[index] = append(words[index], word{name, translation, successCounter, index})
 				}
 			}
@@ -96,10 +98,10 @@ func LoadLanguage(index int) error{
 
 func SaveCurLanguage() {
 
-	if (modified) {
+	if modified {
 		tmpStr := ""
 
-		for _,wordlist := range words {
+		for _, wordlist := range words {
 			for _, elem := range wordlist {
 
 				line := elem.Name
@@ -136,16 +138,16 @@ func AddVocable(name, translation string) {
 
 func DeleteVocable(name, translation string) {
 
-	loop:
-		for x, wordlist := range words {
-			for i, elem := range wordlist {
-				if (elem.Name == name && elem.Translation == translation) {
-					words[x] = append(words[x][:i], words[x][i+1:]...)
-					modified = true
-					break loop
-				}
+loop:
+	for x, wordlist := range words {
+		for i, elem := range wordlist {
+			if elem.Name == name && elem.Translation == translation {
+				words[x] = append(words[x][:i], words[x][i+1:]...)
+				modified = true
+				break loop
 			}
 		}
+	}
 }
 
 func DeleteVocableSplit(compound string) {
@@ -156,11 +158,11 @@ func DeleteVocableSplit(compound string) {
 	}
 }
 
-func GetAll() []string{
+func GetAll() []string {
 
 	all := make([]string, 0)
 
-	for _,wordlist := range words {
+	for _, wordlist := range words {
 		for _, elem := range wordlist {
 
 			line := elem.Name
@@ -202,38 +204,38 @@ func Right(elem word, index int) {
 
 	pocketIndex := elem.pocketIndex
 
-		if words[pocketIndex][index].Name == elem.Name && words[pocketIndex][index].Translation == elem.Translation {
+	if words[pocketIndex][index].Name == elem.Name && words[pocketIndex][index].Translation == elem.Translation {
 
-			curWord := &words[pocketIndex][index]
-			curWord.successCounter++
+		curWord := &words[pocketIndex][index]
+		curWord.successCounter++
 
-			if curWord.successCounter >= successPerPocket[pocketIndex] {
-				moveToNextPocket(pocketIndex, index)
-			}
+		if curWord.successCounter >= successPerPocket[pocketIndex] {
+			moveToNextPocket(pocketIndex, index)
 		}
-		modified = true
+	}
+	modified = true
 }
 
 func False(elem word, index int) {
 	pocketIndex := elem.pocketIndex
 
-		if words[pocketIndex][index].Name == elem.Name && words[pocketIndex][index].Translation == elem.Translation {
+	if words[pocketIndex][index].Name == elem.Name && words[pocketIndex][index].Translation == elem.Translation {
 
-			curWord := &words[pocketIndex][index]
+		curWord := &words[pocketIndex][index]
 
-			if curWord.successCounter == 0 && curWord.pocketIndex > 0 {
+		if curWord.successCounter == 0 && curWord.pocketIndex > 0 {
 
-				// add word to pocket 0
-				AddVocable(curWord.Name, curWord.Translation)
+			// add word to pocket 0
+			AddVocable(curWord.Name, curWord.Translation)
 
-				// delete word out of current pocket
-				words[pocketIndex] = append(words[pocketIndex][:index], words[pocketIndex][index + 1:]...)
+			// delete word out of current pocket
+			words[pocketIndex] = append(words[pocketIndex][:index], words[pocketIndex][index+1:]...)
 
-			} else {
-				curWord.successCounter = 0
-			}
+		} else {
+			curWord.successCounter = 0
 		}
-		modified = true
+	}
+	modified = true
 }
 
 func moveToNextPocket(pocketIndex, wordIndex int) {
@@ -242,8 +244,8 @@ func moveToNextPocket(pocketIndex, wordIndex int) {
 		curWord.successCounter = 0
 		curWord.pocketIndex++
 
-		words[pocketIndex] = append(words[pocketIndex][:wordIndex], words[pocketIndex][wordIndex + 1:]...)
-		words[pocketIndex + 1] = append(words[pocketIndex + 1], curWord)
+		words[pocketIndex] = append(words[pocketIndex][:wordIndex], words[pocketIndex][wordIndex+1:]...)
+		words[pocketIndex+1] = append(words[pocketIndex+1], curWord)
 	}
 }
 

@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/indidev/vocable-o/util/stringutil"
-	"github.com/indidev/vocable-o/util/mathutil"
 	"github.com/indidev/vocable-o/console"
 	"github.com/indidev/vocable-o/lang"
+	"github.com/indidev/vocable-o/util/mathutil"
+	"github.com/indidev/vocable-o/util/stringutil"
 	"io/ioutil"
-	"strings"
-	"strconv"
-	"time"
 	"math/rand"
+	"strconv"
+	"strings"
+	"time"
 )
 
 var replacements map[string]string
@@ -133,7 +133,7 @@ func edtLang() {
 
 			question := []string{stringutil.Join("Realy delete: ", stringutil.Join(lang.CurLang(), "?")),
 				"Type \"yes\" to do so."}
-				input, valid := console.DisplayCenteredWithInput(question, nil, "")
+			input, valid := console.DisplayCenteredWithInput(question, nil, "")
 			if ("yes" == input) && valid {
 				err := lang.DeleteCurLanguage()
 				if err != nil {
@@ -161,13 +161,13 @@ func edtVocables() {
 		console.SetInfoBottom("Esc - Back, Enter - Confirm, d - Delete")
 		index, char := console.ExtendedMenu(words, "", []rune{'d'}, curIndex)
 
-		switch (index) {
+		switch index {
 		case -1:
 			repeate = false
 
 		default:
 			if char == 'd' {
-				curIndex = mathutil.MaxInt(index - 1, 0)
+				curIndex = mathutil.MaxInt(index-1, 0)
 
 				lang.DeleteVocableSplit(words[index])
 			} else {
@@ -177,15 +177,14 @@ func edtVocables() {
 				console.Clear()
 				word, valid := console.DisplayCenteredWithInput(
 					[]string{"", "", "                    ",
-					stringutil.Join(lang1, ":")}, replacements, word)
-
+						stringutil.Join(lang1, ":")}, replacements, word)
 
 				if valid {
 
 					console.Clear()
 					translation, valid := console.DisplayCenteredWithInput(
-						[]string{stringutil.Join(lang1, ":"),word, "                    ",
-						stringutil.Join(lang2, ":")}, replacements, translation)
+						[]string{stringutil.Join(lang1, ":"), word, "                    ",
+							stringutil.Join(lang2, ":")}, replacements, translation)
 
 					if valid {
 						lang.DeleteVocableSplit(words[index])
@@ -212,8 +211,8 @@ func addVocables() {
 
 			console.Clear()
 			translation, valid := console.DisplayCenteredWithInput(
-				[]string{stringutil.Join(lang1, ":"),word, "                    ",
-				stringutil.Join(lang2, ":")}, replacements, "")
+				[]string{stringutil.Join(lang1, ":"), word, "                    ",
+					stringutil.Join(lang2, ":")}, replacements, "")
 			repeate = valid
 
 			if valid {
@@ -310,11 +309,11 @@ func pocketSelect() {
 		option := console.Menu(options, "Choose your Pocket:")
 
 		switch true {
-			case (option == len(options)-1) || (option == -1):
-				repeate = false
+		case (option == len(options)-1) || (option == -1):
+			repeate = false
 
-			default:
-				learn(option)
+		default:
+			learn(option)
 		}
 	}
 }
@@ -352,7 +351,6 @@ func learn(pocketIndex int) {
 					mark = f
 				}
 
-
 				text := []string{stringutil.Join(lang1, ":"), randWord.Name,
 					"                            ", stringutil.Join(lang2, ":"), randWord.Translation, "",
 					stringutil.Join(input, mark)}
@@ -371,7 +369,7 @@ func learn(pocketIndex int) {
 			console.DisplayCentered(text)
 			console.WaitForAnyInput()
 
-			repeate = false;
+			repeate = false
 		}
 	}
 }

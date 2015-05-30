@@ -269,7 +269,7 @@ func UpperCaseOnlyFirst(s string) string {
 	sorts a slice of strings parallel accoarding to alphabetical order,
 	does not distinghuis between lower and upper case
 */
-func Mergesort(slice []string) []string{
+func Mergesort(slice []string) []string {
 	fin := make(chan []string)
 	go mergehelp(slice, fin)
 	return <-fin
@@ -277,12 +277,12 @@ func Mergesort(slice []string) []string{
 
 func mergehelp(slice []string, fin chan []string) {
 	length := len(slice)
-	if (length > 1) {
-		slice1 := slice[:length / 2]
-		slice2 := slice[length / 2:]
+	if length > 1 {
+		slice1 := slice[:length/2]
+		slice2 := slice[length/2:]
 
 		fin1 := make(chan []string)
-		fin2  := make(chan []string)
+		fin2 := make(chan []string)
 		go mergehelp(slice1, fin1)
 		go mergehelp(slice2, fin2)
 
@@ -291,7 +291,7 @@ func mergehelp(slice []string, fin chan []string) {
 
 		slice = merge(slice1, slice2)
 	}
-		fin <- slice
+	fin <- slice
 }
 
 /*
@@ -300,8 +300,8 @@ func mergehelp(slice []string, fin chan []string) {
 func merge(slice1, slice2 []string) []string {
 	sorted := make([]string, 0)
 
-	for (len(slice1) > 0 && len(slice2) > 0) {
-		if (Compare(slice1[0], slice2[0])) {
+	for len(slice1) > 0 && len(slice2) > 0 {
+		if Compare(slice1[0], slice2[0]) {
 			sorted = append(sorted, slice1[0])
 			slice1 = slice1[1:]
 		} else {
@@ -310,10 +310,10 @@ func merge(slice1, slice2 []string) []string {
 		}
 	}
 
-	for _,x := range slice1 {
+	for _, x := range slice1 {
 		sorted = append(sorted, x)
 	}
-	for _,x := range slice2 {
+	for _, x := range slice2 {
 		sorted = append(sorted, x)
 	}
 
@@ -329,10 +329,10 @@ func Compare(x1, x2 string) bool {
 
 	x1LessX2 := true
 
-	for i,x := range x1 {
-		if (x != At(x2, i)) {
+	for i, x := range x1 {
+		if x != At(x2, i) {
 			x1LessX2 = x < At(x2, i)
-			break;
+			break
 		}
 	}
 	return x1LessX2
@@ -343,7 +343,7 @@ func Compare(x1, x2 string) bool {
 */
 func FindInSlice(wordlist *[]string, needle string) int {
 	for index, elem := range *wordlist {
-		if (elem == needle) {
+		if elem == needle {
 			return index
 		}
 	}
