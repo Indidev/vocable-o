@@ -17,6 +17,8 @@ const replFile = "replacements.txt"
 var replacements map[string]string
 
 func main() {
+	//add lanuage dir if not present
+	os.Mkdir("languages", os.ModeDir|os.ModePerm)
 
 	rand.Seed(time.Now().Unix())
 	console.Init()
