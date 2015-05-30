@@ -10,8 +10,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"os"
 )
 
+const replFile = "replacements.txt"
 var replacements map[string]string
 
 func main() {
@@ -19,7 +21,7 @@ func main() {
 	rand.Seed(time.Now().Unix())
 	console.Init()
 
-	console.SetInfoBottom("Esc - Back, Enter - Confirm")
+	setInfoBottom("", true)
 
 	initReplacements()
 	lang.Init()
@@ -31,7 +33,7 @@ func main() {
 
 func mainMenu() {
 
-	options := []string{"Learn Language", "Edit languags", "Show replacements", "Quit"}
+	options := []string{"Learn Language", "Edit languags", "Show/Edit replacements", "Quit"}
 
 	for repeate := true; repeate; {
 		option := console.Menu(options, "What would you like to do?")
@@ -58,19 +60,70 @@ func mainMenu() {
 
 func showReplacements() {
 
+	repeate := true
+	curIndex := 0
+	for repeate {
+		console.Clear()
+
+		setInfoBottom("Esc - Back, Enter - Edit, a - Add, d - Delete", false)
+
+		items := make([]string, 0)
+		for old, new := range replacements {
+			items = append(items, stringutil.Join(stringutil.Join(old, " -> "), new))
+		}
+		index, char := console.ExtendedMenu(items, "", []rune{'d', 'a'}, curIndex)
+
+		switch index {
+		case -1:
+			repeate = false
+
+		default:
+			key, _ := stringutil.SplitFirst(items[index], "->")
+			switch true {
+			// Delete replacement
+			case char == 'd':
+				delete(replacements, key)
+				curIndex = mathutil.MaxInt(index-1, 0)
+
+			// Add replacement
+			case char == 'a':
+				edtReplacement("")
+			// Edit replacement
+			default:
+				edtReplacement(key)
+			}
+			saveReplacements()
+	}
+}
+	setInfoBottom("", true)
+}
+
+func edtReplacement(key string) {
+	setInfoBottom("", true)
 	console.Clear()
+	old, valid := console.DisplayCenteredWithInput([]string{"", "", "", "Enter your string to replace:"}, nil, key)
+	if valid {
+		console.Clear()
+		new, valid := console.DisplayCenteredWithInput([]string{"String to replace:", old, "", "Enter the new character/string "}, nil, replacements[key])
+		if valid {
+			replacements[old] = new
+			delete(replacements, key)
+		}
+	}
+}
 
-	elements := make([]string, len(replacements))
+func saveReplacements() {
+	tmpStr := ""
+	for key, value := range replacements {
+			line := key
+			line = stringutil.Join(line, " := ")
+			line = stringutil.Join(line, value)
+			line = stringutil.Join(line, "\n")
 
-	i := 0
-	for old, new := range replacements {
-		elements[i] = stringutil.Join(stringutil.Join(old, " -> "), new)
-		i++
+			tmpStr = stringutil.Join(tmpStr, line)
 	}
 
-	console.DisplayCentered(elements)
-
-	console.WaitForAnyInput()
+	ioutil.WriteFile(replFile, []byte(tmpStr), os.ModePerm)
 }
 
 func edtLangMenu() {
@@ -153,13 +206,25 @@ func edtLang() {
 	}
 }
 
+func setInfoBottom(option string, standardOptions bool) {
+	bottomText := ""
+	if standardOptions {
+		bottomText = stringutil.Join(bottomText, "Esc - Back, Enter - Confirm")
+	}
+	if bottomText != "" && option != "" {
+		bottomText = stringutil.Join(bottomText, ", ")
+	}
+	bottomText = stringutil.Join(bottomText, option)
+	console.SetInfoBottom(bottomText)
+}
+
 func edtVocables() {
 
 	curIndex := 0
 
 	for repeate := true; repeate; {
 		words := lang.GetAll()
-		console.SetInfoBottom("Esc - Back, Enter - Confirm, d - Delete")
+		setInfoBottom("d - Delete", true)
 		index, char := console.ExtendedMenu(words, "", []rune{'d'}, curIndex)
 
 		switch index {
@@ -195,7 +260,7 @@ func edtVocables() {
 			}
 		}
 	}
-	console.SetInfoBottom("Esc - Back, Enter - Confirm")
+	setInfoBottom("", true)
 }
 
 func addVocables() {
@@ -226,7 +291,7 @@ func initReplacements() {
 
 	replacements = make(map[string]string)
 
-	data, err := ioutil.ReadFile("replacements.txt")
+	data, err := ioutil.ReadFile(replFile)
 
 	if err == nil {
 		lines := strings.Split(string(data), "\n")

@@ -355,7 +355,7 @@ func FindInSlice(wordlist *[]string, needle string) int {
 */
 func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 	if ignorePunctuation {
-		var replacements = make(map[string]string)
+		replacements := make(map[string]string)
 		replacements[","] = ""
 		replacements["."] = ""
 		replacements["?"] = ""

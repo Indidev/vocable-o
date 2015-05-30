@@ -402,13 +402,9 @@ wait:
 /*
 	Blocks until the user presses any key
 */
-func WaitForAnyInput() {
-wait:
-	for ev := range Event() {
-		if ev.Type == termbox.EventKey {
-			break wait
-		}
-	}
+func WaitForAnyInput() rune {
+	key, _ := getKeyEvent()
+	return key
 }
 
 /*
