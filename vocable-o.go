@@ -27,7 +27,6 @@ func main() {
 	mainMenu()
 
 	console.Quit()
-
 }
 
 func mainMenu() {
@@ -88,12 +87,14 @@ func edtLangMenu() {
 
 		switch true {
 
+		// Add language
 		case option == len(options)-2:
 			addLanguage()
-
+		// Back to main menu
 		case (option == len(options)-1) || (option == -1):
 			repeate = false
 
+		// Language selected
 		default:
 			err := lang.LoadLanguage(option)
 			if err == nil {
@@ -195,7 +196,6 @@ func edtVocables() {
 		}
 	}
 	console.SetInfoBottom("Esc - Back, Enter - Confirm")
-
 }
 
 func addVocables() {
@@ -243,7 +243,6 @@ func initReplacements() {
 }
 
 func addLanguage() {
-
 	console.Clear()
 
 	info := []string{"Enter the language you want to learn:"}
@@ -288,7 +287,6 @@ func learnLangMenu() {
 				console.WaitForAnyInput()
 			}
 		}
-
 		lang.SaveCurLanguage()
 	}
 }
