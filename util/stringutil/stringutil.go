@@ -18,7 +18,7 @@ func Join(a, b string) string {
 func ReplaceMap(s string, replacements map[string]string) string {
 	if replacements != nil {
 		for old, new := range replacements {
-			s = Replace(s, old, new, 3)
+			s = Replace(s, old, new, -1)
 		}
 	}
 
@@ -26,7 +26,8 @@ func ReplaceMap(s string, replacements map[string]string) string {
 }
 
 /*
-	Replaces finds and replaces all substrings of old and replaces it with new
+	This function finds and replaces all substrings of old and replaces it with new
+	/param n number of max replacements (-1 for all)
 */
 func Replace(s, old, new string, n int) string {
 	for i := 0; i < n || n < 0; i++ {
@@ -362,7 +363,11 @@ func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 		replacements["!"] = ""
 		replacements[":"] = ""
 		x1 = ReplaceMap(x1, replacements)
+		x1 = Replace(x1, "  ", " ", -1);
 		x2 = ReplaceMap(x2, replacements)
+		x2 = Replace(x2, "  ", " ", -1);
+		x1 = strings.TrimSpace(x1)
+		x2 = strings.TrimSpace(x2)
 	}
 	return strings.ToLower(x1) == strings.ToLower(x2)
 }
