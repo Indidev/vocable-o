@@ -19,6 +19,7 @@ type Rect struct {
 	x, y, w, h int
 }
 
+const noItemInfo = "Sorry, no item to choose."
 var width, height int
 var event = make(chan termbox.Event)
 var info = make(chan bool)
@@ -173,6 +174,11 @@ loop:
 		}
 	}
 
+  //avoid out of bounds exeption (no items means always escape, no enter)
+	if len(items) == 0 {
+		selection = -1
+	}
+
 	return selection, key
 }
 
@@ -190,6 +196,10 @@ func drawMenu(items []string, selectedId int, info string) {
 	//determine width of longest item and therefor width of the box spacing the items
 	for _, elem := range items {
 		w = mathutil.MaxInt(stringutil.Size(elem), w)
+	}
+
+	if len(items) == 0 {
+		w = stringutil.Size(noItemInfo) - 4
 	}
 
 	//add width of selection item
@@ -245,13 +255,16 @@ func drawMenu(items []string, selectedId int, info string) {
 		writeNoFlush(x, y+i, stringutil.Join(symbol, items[i+startindex]))
 	}
 
+	if len(items) == 0 {
+		writeNoFlush(x, y, noItemInfo)
+	}
+
 	if startindex > 0 {
 		writeNoFlush(width/2-1, y-1, above)
 	}
 	if (startindex + h) < len(items) {
 		writeNoFlush(width/2-1, y+h, below)
 	}
-
 	termbox.Flush()
 }
 
