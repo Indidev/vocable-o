@@ -37,4 +37,5 @@ When editing, check that non of old-key-sequences is part of a new-key-sequence,
 * add helping support (number of characters, character suggestion,...)
 * add reverse language learning (new language -> known language)
 * fancy colors?
+* importer for anki decks/cards
 * suggest me more stuff.
