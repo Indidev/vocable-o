@@ -225,8 +225,9 @@ func False(elem word, index int) {
 
 		if curWord.successCounter == 0 && curWord.pocketIndex > 0 {
 
-			// add word to pocket 0
-			AddVocable(curWord.Name, curWord.Translation)
+			// add word to previous pocket
+			curWord.pocketIndex--
+			words[pocketIndex - 1] = append(words[pocketIndex - 1], *curWord)
 
 			// delete word out of current pocket
 			words[pocketIndex] = append(words[pocketIndex][:index], words[pocketIndex][index+1:]...)
