@@ -416,7 +416,7 @@ func wordGuess(pocketIndex int) bool {
 				mark = r
 			} else {
 				if stringutil.Levenshtein(input, randWord.Translation, true) <= 1 {
-					mark = " /yellow <- almost right"
+					mark = " /orange <- almost right"
 					text = []string{stringutil.Join(lang1, ":"), randWord.Name,
 						"                            ", stringutil.Join(lang2, ":"), stringutil.Join(input, mark)}
 

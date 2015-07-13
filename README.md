@@ -15,8 +15,9 @@ Five pockets are used to maximize your learning efficiency.
 Every vocable moves to the next pocket after it was guessed correctly x times, where x = pocketnumber + 1 (x can be modified in a later version).
 If a word is guessed false once and the success-counter is greater then 0, the success-counter of that word is set to 0, otherwise the word is moved back to the previouse pocket.
 
-##### almost right #####
-If a word is guessed almost right, which means the levenshtein distance equals 1, then a second chance is granted, where a right answer does not increase the words success counter, however a false answer is handled as described befor.
+##### almost right answers #####
+If a word is guessed almost right, which means the levenshtein distance equals 1, then a second chance is granted.
+A right answer then neither increase nor decreases the words success counter, however a false answer is handled as described before.
 
 
 #### Character replacements ####
@@ -40,6 +41,6 @@ When editing, check that non of old-key-sequences is part of a new-key-sequence,
 * improve pocket system (modifiable x)
 * add helping support (number of characters, character suggestion,...)
 * add reverse language learning (new language -> known language)
-* fancy colors?
+* fancy colors? (Supported)
 * importer for anki decks/cards
 * suggest me more stuff.

@@ -32,6 +32,7 @@ func Init() {
 	go run()
 
 	<-info //wait for termbox to open
+	termbox.SetOutputMode(termbox.Output256)
 }
 
 func run() {
@@ -132,6 +133,8 @@ func writeNoFlush(x, y int, value string) {
 						curColor = termbox.ColorMagenta
 					case "cyan":
 						curColor = termbox.ColorCyan
+					case "orange":
+						curColor = 203
 					case "default":
 						curColor = termbox.ColorDefault
 					case "bold":
