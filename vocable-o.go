@@ -7,13 +7,14 @@ import (
 	"github.com/indidev/vocable-o/util/stringutil"
 	"io/ioutil"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 	"time"
-	"os"
 )
 
 const replFile = "replacements.txt"
+
 var replacements map[string]string
 
 func main() {
@@ -95,8 +96,8 @@ func showReplacements() {
 				edtReplacement(key)
 			}
 			saveReplacements()
+		}
 	}
-}
 	setInfoBottom("", true)
 }
 
@@ -117,12 +118,12 @@ func edtReplacement(key string) {
 func saveReplacements() {
 	tmpStr := ""
 	for key, value := range replacements {
-			line := key
-			line = stringutil.Join(line, " := ")
-			line = stringutil.Join(line, value)
-			line = stringutil.Join(line, "\n")
+		line := key
+		line = stringutil.Join(line, " := ")
+		line = stringutil.Join(line, value)
+		line = stringutil.Join(line, "\n")
 
-			tmpStr = stringutil.Join(tmpStr, line)
+		tmpStr = stringutil.Join(tmpStr, line)
 	}
 
 	ioutil.WriteFile(replFile, []byte(tmpStr), os.ModePerm)
@@ -385,56 +386,73 @@ func pocketSelect() {
 
 func learn(pocketIndex int) {
 
+	for wordGuess(pocketIndex){}
+}
+
+func wordGuess(pocketIndex int) bool {
+
 	lang1, lang2 := lang.Language()
 
 	r := " /green  ✔"
 	f := " /red  ✘"
 
-	for repeate := true; repeate; {
+	if lang.PocketSize(pocketIndex) > 0 {
+		console.Clear()
+		//get random word
+		randWord, index := lang.RandomWord(pocketIndex)
 
-		//check number of words in pocket
-		if lang.PocketSize(pocketIndex) > 0 {
-			console.Clear()
-			//get random word
-			randWord, index := lang.RandomWord(pocketIndex)
+		text := []string{stringutil.Join(lang1, ":"), randWord.Name,
+			"                            ", stringutil.Join(lang2, ":"), ""}
 
-			text := []string{stringutil.Join(lang1, ":"), randWord.Name,
-				"                            ", stringutil.Join(lang2, ":"), ""}
+		//display text and get user input
+		input, valid := console.DisplayCenteredWithInput(text, replacements, "")
 
-			//display text and get user input
-			input, valid := console.DisplayCenteredWithInput(text, replacements, "")
+		//check if input is valid
+		if valid {
+			mark := ""
+			//check if input is equal
+			if stringutil.CheckEqual(input, randWord.Translation, true) {
+				lang.Right(randWord, index)
+				mark = r
+			} else {
+				if stringutil.Levenshtein(input, randWord.Translation, true) <= 1 {
+					mark = " /yellow <- almost right"
+					text = []string{stringutil.Join(lang1, ":"), randWord.Name,
+						"                            ", stringutil.Join(lang2, ":"), stringutil.Join(input, mark)}
 
-			//check if input is valid
-			if valid {
-				mark := ""
-				//check if input is equal
-				if stringutil.CheckEqual(input, randWord.Translation, true) {
-					lang.Right(randWord, index)
-					mark = r
+					console.Clear()
+					input, valid = console.DisplayCenteredWithInput(text, replacements, input)
+					if valid && stringutil.CheckEqual(input, randWord.Translation, true) {
+						mark = r
+					} else {
+						lang.False(randWord, index)
+						mark = f
+					}
 				} else {
 					lang.False(randWord, index)
 					mark = f
 				}
-
-				text := []string{stringutil.Join(lang1, ":"), randWord.Name,
-					"                            ", stringutil.Join(lang2, ":"), randWord.Translation, "",
-					stringutil.Join(input, mark)}
-				console.Clear()
-				console.DisplayCentered(text)
-				console.WaitForAnyInput()
-
-			} else {
-				repeate = false
 			}
-		} else {
 
-			text := []string{"No vocables left"}
-
+			text = []string{stringutil.Join(lang1, ":"), randWord.Name,
+				"                            ", stringutil.Join(lang2, ":"), randWord.Translation, "",
+				stringutil.Join(input, mark)}
 			console.Clear()
 			console.DisplayCentered(text)
 			console.WaitForAnyInput()
 
-			repeate = false
+		} else {
+			return false
 		}
+	} else {
+
+		text := []string{"No vocables left"}
+
+		console.Clear()
+		console.DisplayCentered(text)
+		console.WaitForAnyInput()
+
+		return false
 	}
+	return true
 }

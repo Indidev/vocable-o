@@ -16,6 +16,17 @@ func MinInt(a, b int) int {
 }
 
 /*
+	returns the absolut value of a
+*/
+func AbsInt(a int) int {
+	if a < 0 {
+		return -1 * a
+	} else {
+		return a
+	}
+}
+
+/*
 	returns the larger interger
 */
 func MaxInt(a, b int) int {

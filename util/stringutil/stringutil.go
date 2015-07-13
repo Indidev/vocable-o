@@ -356,18 +356,52 @@ func FindInSlice(wordlist *[]string, needle string) int {
 */
 func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 	if ignorePunctuation {
-		replacements := make(map[string]string)
-		replacements[","] = ""
-		replacements["."] = ""
-		replacements["?"] = ""
-		replacements["!"] = ""
-		replacements[":"] = ""
-		x1 = ReplaceMap(x1, replacements)
-		x1 = Replace(x1, "  ", " ", -1);
-		x2 = ReplaceMap(x2, replacements)
-		x2 = Replace(x2, "  ", " ", -1);
-		x1 = strings.TrimSpace(x1)
-		x2 = strings.TrimSpace(x2)
+		x1 = removePunctiation(x1)
+		x2 = removePunctiation(x2)
 	}
 	return strings.ToLower(x1) == strings.ToLower(x2)
+}
+
+/*
+	returns the levenshtein distance between two strings,ignoring cases and option to ignore puctuation
+*/
+func Levenshtein(str1, str2 string, ignorePunctuation bool) int {
+	if ignorePunctuation {
+		str1 = removePunctiation(str1)
+		str2 = removePunctiation(str2)
+	}
+	str1 = strings.ToLower(str1)
+	str2 = strings.ToLower(str2)
+	return levenshteinBT(strings.Split(str1, ""), strings.Split(str2, ""))
+}
+
+/*
+	levenshtein back tracking helping function
+*/
+func levenshteinBT(str1, str2 []string) int {
+	if len(str1) == 0 || len(str2) == 0 {
+		return mathutil.AbsInt(len(str1) - len(str2))
+	}
+	result := levenshteinBT(str1[1:], str2) + 1 //delete
+	result = mathutil.MinInt(levenshteinBT(str1, str2[1:]) + 1, result) //insert
+	if (str1[0] == str2[0]) {
+	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:]), result) //equality
+	} else {
+	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:]) + 1, result) //substitution
+	}
+	return result
+}
+
+func removePunctiation(x string) string {
+	replacements := make(map[string]string)
+	replacements[","] = ""
+	replacements["."] = ""
+	replacements["?"] = ""
+	replacements["!"] = ""
+	replacements[":"] = ""
+	x = ReplaceMap(x, replacements)
+	x = Replace(x, "  ", " ", -1);
+	x = strings.TrimSpace(x)
+
+	return x
 }
