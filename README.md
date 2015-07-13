@@ -13,7 +13,11 @@ Install and update with ```go get -u github.com/indidev/vocable-o```
 Vocable-o supports every language you like, however you have to add all languages yourself (this can be done in the application).
 Five pockets are used to maximize your learning efficiency.
 Every vocable moves to the next pocket after it was guessed correctly x times, where x = pocketnumber + 1 (x can be modified in a later version).
-If a word is guessed false once and the success-counter is greater then 0, the success-counter of that word is set to 0, otherwise the word is moved back to the very first pocket.
+If a word is guessed false once and the success-counter is greater then 0, the success-counter of that word is set to 0, otherwise the word is moved back to the previouse pocket.
+
+##### almost right #####
+If a word is guessed almost right, which means the levenshtein distance equals 1, then a second chance is granted, where a right answer does not increase the words success counter, however a false answer is handled as described befor.
+
 
 #### Character replacements ####
 Characters which are not present on your keyboard(or pretty inconvenient) can be substituted by other keys/key-sequences by defining them in the replacements.txt in following form:
