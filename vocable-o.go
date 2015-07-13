@@ -387,8 +387,8 @@ func learn(pocketIndex int) {
 
 	lang1, lang2 := lang.Language()
 
-	r := "  ✔"
-	f := "  ✘"
+	r := " /green  ✔"
+	f := " /red  ✘"
 
 	for repeate := true; repeate; {
 

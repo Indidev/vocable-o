@@ -106,11 +106,59 @@ func Write(x, y int, value string) {
 func writeNoFlush(x, y int, value string) {
 	if height > y && y >= 0 {
 		i := 0
+		curColor := termbox.ColorDefault
+		esc := false
+		escString := ""
 		for _, c := range value {
-			if width > (x + i) {
-				termbox.SetCell(x+i, y, c, termbox.ColorDefault, termbox.ColorDefault)
+			if c == '/' {
+				esc = true;
+			} else if esc && (c == ' ') {
+				esc = false;
+				//interpret escaped string
+				switch escString {
+					case "red":
+						curColor = termbox.ColorRed
+					case "green":
+						curColor = termbox.ColorGreen
+					case "blue":
+						curColor = termbox.ColorBlue
+					case "yellow":
+						curColor = termbox.ColorYellow
+					case "black":
+						curColor = termbox.ColorBlack
+					case "white":
+						curColor = termbox.ColorWhite
+					case "magenta":
+						curColor = termbox.ColorMagenta
+					case "cyan":
+						curColor = termbox.ColorCyan
+					case "default":
+						curColor = termbox.ColorDefault
+					case "bold":
+						curColor |= termbox.AttrBold
+					case "underline":
+						curColor |= termbox.AttrUnderline
+					case "invert":
+						curColor |= termbox.AttrReverse
+					default:
+						escString = stringutil.Join("/", stringutil.Join(escString, " "))
+						for _, c2 := range escString {
+							if width > (x + i) {
+								termbox.SetCell(x+i, y, c2, curColor, termbox.ColorDefault)
+							}
+							i++
+						}
+				}
+				escString = ""
+
+			} else if !esc {
+				if width > (x + i) {
+					termbox.SetCell(x+i, y, c, curColor, termbox.ColorDefault)
+				}
+				i++
+			} else {
+				escString = stringutil.Join(escString, string(c))
 			}
-			i++
 		}
 	}
 }
