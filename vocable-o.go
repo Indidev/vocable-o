@@ -35,7 +35,7 @@ func main() {
 
 func mainMenu() {
 
-	options := []string{"Learn Language", "Edit languags", "Show/Edit replacements", "Quit"}
+	options := []string{"Learn Language", "Edit languages", "Show/Edit replacements", "Quit"}
 
 	for repeate := true; repeate; {
 		option := console.Menu(options, "What would you like to do?")
