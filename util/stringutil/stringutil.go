@@ -365,29 +365,32 @@ func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 /*
 	returns the levenshtein distance between two strings,ignoring cases and option to ignore puctuation
 */
-func Levenshtein(str1, str2 string, ignorePunctuation bool) int {
+func Levenshtein(str1, str2 string, ignorePunctuation bool, maxLD int) int {
 	if ignorePunctuation {
 		str1 = removePunctiation(str1)
 		str2 = removePunctiation(str2)
 	}
 	str1 = strings.ToLower(str1)
 	str2 = strings.ToLower(str2)
-	return levenshteinBT(strings.Split(str1, ""), strings.Split(str2, ""))
+	return levenshteinBT(strings.Split(str1, ""), strings.Split(str2, ""), 0, maxLD)
 }
 
 /*
 	levenshtein back tracking helping function
 */
-func levenshteinBT(str1, str2 []string) int {
+func levenshteinBT(str1, str2 []string, curLD, maxLD int) int {
+	if (curLD > maxLD) {
+		return curLD
+	}
 	if len(str1) == 0 || len(str2) == 0 {
 		return mathutil.AbsInt(len(str1) - len(str2))
 	}
-	result := levenshteinBT(str1[1:], str2) + 1 //delete
-	result = mathutil.MinInt(levenshteinBT(str1, str2[1:]) + 1, result) //insert
+	result := levenshteinBT(str1[1:], str2, curLD + 1, maxLD) //delete
+	result = mathutil.MinInt(levenshteinBT(str1, str2[1:], curLD + 1, maxLD), result) //insert
 	if (str1[0] == str2[0]) {
-	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:]), result) //equality
+	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD, maxLD), result) //equality
 	} else {
-	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:]) + 1, result) //substitution
+	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD + 1, maxLD), result) //substitution
 	}
 	return result
 }
