@@ -383,7 +383,7 @@ func levenshteinBT(str1, str2 []string, curLD, maxLD int) int {
 		return curLD
 	}
 	if len(str1) == 0 || len(str2) == 0 {
-		return mathutil.AbsInt(len(str1) - len(str2))
+		return curLD + mathutil.AbsInt(len(str1) - len(str2))
 	}
 	result := levenshteinBT(str1[1:], str2, curLD + 1, maxLD) //delete
 	result = mathutil.MinInt(levenshteinBT(str1, str2[1:], curLD + 1, maxLD), result) //insert

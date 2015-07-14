@@ -163,6 +163,15 @@ func writeNoFlush(x, y int, value string) {
 				escString = stringutil.Join(escString, string(c))
 			}
 		}
+		if (escString != "") {
+			escString = stringutil.Join("/", stringutil.Join(escString, " "))
+			for _, c2 := range escString {
+				if width > (x + i) {
+					termbox.SetCell(x+i, y, c2, curColor, termbox.ColorDefault)
+				}
+				i++
+			}
+		}
 	}
 }
 
