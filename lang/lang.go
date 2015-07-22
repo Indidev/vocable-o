@@ -18,7 +18,7 @@ type word struct {
 
 var AvailableLanguages []string
 
-var successPerPocket = [5]int{2, 3, 4, 5, 100000}
+var successPerPocket = [5]int{2, 3, 4, 5, 1000}
 
 const wordfile = "wordlist.txt"
 const dirname = "languages/"
@@ -195,9 +195,19 @@ func AddLanguage(lang1, lang2 string) {
 
 }
 
+//returns a random word with its index.
+//words with a low succes counter are more likely to be returned.
 func RandomWord(pocketIndex int) (word, int) {
-	index := rand.Int() % PocketSize(pocketIndex)
+	x := make([]int, 0) //index list
+	for index, elem := range words[pocketIndex] {
+		for i := 0; i < successPerPocket[pocketIndex] - elem.successCounter; i++ {
+			x = append(x, index) //add index to the list
+		}
+	}
+	index := x[rand.Int() % len(x)]
+	//index := rand.Int() % PocketSize(pocketIndex)
 	return words[pocketIndex][index], index
+
 }
 
 func Right(elem word, index int) {
