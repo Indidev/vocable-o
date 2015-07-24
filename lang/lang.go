@@ -3,7 +3,8 @@ package lang
 import (
 	"github.com/indidev/vocable-o/util/stringutil"
 	"io/ioutil"
-	"math/rand"
+	"crypto/rand"
+	"math/big"
 	"os"
 	"strconv"
 	"strings"
@@ -204,7 +205,9 @@ func RandomWord(pocketIndex int) (word, int) {
 			x = append(x, index) //add index to the list
 		}
 	}
-	index := x[rand.Int() % len(x)]
+	len := big.NewInt((int64)(len(x)))
+	tmpRand, _ := rand.Int(rand.Reader, len)
+	index := x[tmpRand.Int64()]
 	//index := rand.Int() % PocketSize(pocketIndex)
 	return words[pocketIndex][index], index
 

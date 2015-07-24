@@ -6,11 +6,11 @@ import (
 	"github.com/indidev/vocable-o/util/mathutil"
 	"github.com/indidev/vocable-o/util/stringutil"
 	"io/ioutil"
-	"math/rand"
+	//"crypto/rand"
 	"os"
 	"strconv"
 	"strings"
-	"time"
+	//"time"
 )
 
 const replFile = "replacements.txt"
@@ -21,7 +21,7 @@ func main() {
 	//add lanuage dir if not present
 	os.Mkdir("languages", os.ModeDir|os.ModePerm)
 
-	rand.Seed(time.Now().Unix())
+	//rand.Seed(time.Now().Unix())
 	console.Init()
 
 	setInfoBottom("", true)
