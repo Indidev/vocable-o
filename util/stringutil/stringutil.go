@@ -365,32 +365,35 @@ func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 /*
 	returns the levenshtein distance between two strings,ignoring cases and option to ignore puctuation
 */
-func Levenshtein(str1, str2 string, ignorePunctuation bool, maxLD int) int {
+func Levenshtein(str1, str2 string, ignorePunctuation, allowScrambledLetters bool, maxLD int) int {
 	if ignorePunctuation {
 		str1 = removePunctiation(str1)
 		str2 = removePunctiation(str2)
 	}
 	str1 = strings.ToLower(str1)
 	str2 = strings.ToLower(str2)
-	return levenshteinBT(strings.Split(str1, ""), strings.Split(str2, ""), 0, maxLD)
+	return levenshteinBT(strings.Split(str1, ""), strings.Split(str2, ""), 0, maxLD, allowScrambledLetters)
 }
 
 /*
 	levenshtein back tracking helping function
 */
-func levenshteinBT(str1, str2 []string, curLD, maxLD int) int {
+func levenshteinBT(str1, str2 []string, curLD, maxLD int, allowScrambledLetters bool) int {
 	if (curLD > maxLD) {
 		return curLD
 	}
 	if len(str1) == 0 || len(str2) == 0 {
 		return curLD + mathutil.AbsInt(len(str1) - len(str2))
 	}
-	result := levenshteinBT(str1[1:], str2, curLD + 1, maxLD) //delete
-	result = mathutil.MinInt(levenshteinBT(str1, str2[1:], curLD + 1, maxLD), result) //insert
-	if (str1[0] == str2[0]) {
-	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD, maxLD), result) //equality
+	result := levenshteinBT(str1[1:], str2, curLD + 1, maxLD, allowScrambledLetters) //delete
+	result = mathutil.MinInt(levenshteinBT(str1, str2[1:], curLD + 1, maxLD, allowScrambledLetters), result) //insert
+	if str1[0] == str2[0] {
+	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD, maxLD, allowScrambledLetters), result) //equality
 	} else {
-	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD + 1, maxLD), result) //substitution
+		if allowScrambledLetters && str1[0] == str2[1] && str1[1] ==str2[0] {
+			result = mathutil.MinInt(levenshteinBT(str1[2:], str2[2:], curLD + 1, maxLD, allowScrambledLetters), result) //scrambled letters
+		}
+	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD + 1, maxLD, allowScrambledLetters), result) //substitution
 	}
 	return result
 }
