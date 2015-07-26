@@ -390,7 +390,7 @@ func levenshteinBT(str1, str2 []string, curLD, maxLD int, allowScrambledLetters 
 	if str1[0] == str2[0] {
 	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD, maxLD, allowScrambledLetters), result) //equality
 	} else {
-		if allowScrambledLetters && str1[0] == str2[1] && str1[1] ==str2[0] {
+		if allowScrambledLetters && len(str1) > 1 && len(str2) > 1 && str1[0] == str2[1] && str1[1] ==str2[0] {
 			result = mathutil.MinInt(levenshteinBT(str1[2:], str2[2:], curLD + 1, maxLD, allowScrambledLetters), result) //scrambled letters
 		}
 	result = mathutil.MinInt(levenshteinBT(str1[1:], str2[1:], curLD + 1, maxLD, allowScrambledLetters), result) //substitution
