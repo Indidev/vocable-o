@@ -18,6 +18,7 @@ If a word is guessed false once and the success-counter is greater then 0, the s
 ##### almost right answers #####
 If a word is guessed almost right, which means the levenshtein distance equals 1, then a second chance is granted.
 A right answer then neither increase nor decreases the words success counter, however a false answer is handled as described before.
+The levenshtein distance is modified in a way, that twisted characters (e.g. ab instead of ba) are counted as one mistake, as this often happens while typing really fast.
 
 
 #### Character replacements ####
