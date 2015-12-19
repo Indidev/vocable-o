@@ -20,7 +20,6 @@ If a word is guessed almost right, which means the levenshtein distance equals 1
 A right answer then neither increase nor decreases the words success counter, however a false answer is handled as described before.
 The levenshtein distance is modified in a way, that twisted characters (e.g. ab instead of ba) are counted as one mistake, as this often happens while typing really fast.
 
-
 #### Character replacements ####
 Characters which are not present on your keyboard(or pretty inconvenient) can be substituted by other keys/key-sequences by defining them in the replacements.txt in following form:
 

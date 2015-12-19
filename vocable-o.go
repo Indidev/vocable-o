@@ -385,74 +385,78 @@ func pocketSelect() {
 }
 
 func learn(pocketIndex int) {
+	loop := true
 
-	for wordGuess(pocketIndex){}
-}
+	lastWord := ""
 
-func wordGuess(pocketIndex int) bool {
+	for loop {
+		lang1, lang2 := lang.Language()
 
-	lang1, lang2 := lang.Language()
+		r := " /green  ✔"
+		f := " /red  ✘"
 
-	r := " /green  ✔"
-	f := " /red  ✘"
+		if lang.PocketSize(pocketIndex) > 0 {
+			console.Clear()
+			//get random word
+			randWord, index := lang.RandomWord(pocketIndex)
 
-	if lang.PocketSize(pocketIndex) > 0 {
-		console.Clear()
-		//get random word
-		randWord, index := lang.RandomWord(pocketIndex)
+			for (lang.PocketSize(pocketIndex) > 1) && (randWord.Name == lastWord) {
+				randWord, index = lang.RandomWord(pocketIndex)
+			}
+			lastWord = randWord.Name
 
-		text := []string{stringutil.Join(lang1, ":"), randWord.Name,
-			"                            ", stringutil.Join(lang2, ":"), ""}
+			text := []string{stringutil.Join(lang1, ":"), randWord.Name,
+				"                            ", stringutil.Join(lang2, ":"), ""}
 
-		//display text and get user input
-		input, valid := console.DisplayCenteredWithInput(text, replacements, "")
+			//display text and get user input
+			input, valid := console.DisplayCenteredWithInput(text, replacements, "")
 
-		//check if input is valid
-		if valid {
-			mark := ""
-			//check if input is equal
-			if stringutil.CheckEqual(input, randWord.Translation, true) {
-				lang.Right(randWord, index)
-				mark = r
-			} else {
-				if stringutil.Levenshtein(input, randWord.Translation, true, true, 1) <= 1 {
-					mark = " /orange <- almost right"
-					text = []string{stringutil.Join(lang1, ":"), randWord.Name,
-						"                            ", stringutil.Join(lang2, ":"), stringutil.Join(input, mark)}
+			//check if input is valid
+			if valid {
+				mark := ""
+				//check if input is equal
+				if stringutil.CheckEqual(input, randWord.Translation, true) {
+					lang.Right(randWord, index)
+					mark = r
+				} else {
+					if stringutil.Levenshtein(input, randWord.Translation, true, true, 1) <= 1 {
+						mark = " /orange <- almost right"
+						text = []string{stringutil.Join(lang1, ":"), randWord.Name,
+							"                            ", stringutil.Join(lang2, ":"), stringutil.Join(input, mark)}
 
-					console.Clear()
-					input, valid = console.DisplayCenteredWithInput(text, replacements, input)
-					if valid && stringutil.CheckEqual(input, randWord.Translation, true) {
-						mark = r
+						console.Clear()
+						input, valid = console.DisplayCenteredWithInput(text, replacements, input)
+						if valid && stringutil.CheckEqual(input, randWord.Translation, true) {
+							mark = r
+						} else {
+							lang.False(randWord, index)
+							mark = f
+						}
 					} else {
 						lang.False(randWord, index)
 						mark = f
 					}
-				} else {
-					lang.False(randWord, index)
-					mark = f
 				}
-			}
 
-			text = []string{stringutil.Join(lang1, ":"), randWord.Name,
-				"                            ", stringutil.Join(lang2, ":"), randWord.Translation, "",
-				stringutil.Join(input, mark)}
+				text = []string{stringutil.Join(lang1, ":"), randWord.Name,
+					"                            ", stringutil.Join(lang2, ":"), randWord.Translation, "",
+					stringutil.Join(input, mark)}
+				console.Clear()
+				console.DisplayCentered(text)
+				console.WaitForAnyInput()
+
+			} else {
+				loop = false
+			}
+		} else {
+
+			text := []string{"No vocables left"}
+
 			console.Clear()
 			console.DisplayCentered(text)
 			console.WaitForAnyInput()
 
-		} else {
-			return false
+			loop = false
 		}
-	} else {
-
-		text := []string{"No vocables left"}
-
-		console.Clear()
-		console.DisplayCentered(text)
-		console.WaitForAnyInput()
-
-		return false
 	}
-	return true
 }
