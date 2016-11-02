@@ -356,8 +356,8 @@ func FindInSlice(wordlist *[]string, needle string) int {
 */
 func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 	if ignorePunctuation {
-		x1 = removePunctiation(x1)
-		x2 = removePunctiation(x2)
+		x1 = removePunctuation(x1)
+		x2 = removePunctuation(x2)
 	}
 	return strings.ToLower(x1) == strings.ToLower(x2)
 }
@@ -367,8 +367,8 @@ func CheckEqual(x1, x2 string, ignorePunctuation bool) bool {
 */
 func Levenshtein(str1, str2 string, ignorePunctuation, allowScrambledLetters bool, maxLD int) int {
 	if ignorePunctuation {
-		str1 = removePunctiation(str1)
-		str2 = removePunctiation(str2)
+		str1 = removePunctuation(str1)
+		str2 = removePunctuation(str2)
 	}
 	str1 = strings.ToLower(str1)
 	str2 = strings.ToLower(str2)
@@ -398,7 +398,7 @@ func levenshteinBT(str1, str2 []string, curLD, maxLD int, allowScrambledLetters 
 	return result
 }
 
-func removePunctiation(x string) string {
+func removePunctuation(x string) string {
 	replacements := make(map[string]string)
 	replacements[","] = ""
 	replacements["."] = ""
